@@ -1,8 +1,10 @@
 package com.springboot.springbootdemo.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
+
+import java.util.List;
+import java.util.Set;
 
 @Document
 public class SummonerDTO {
@@ -14,6 +16,10 @@ public class SummonerDTO {
     private long id;
     private long accountId;
 
+    private Set<LeaguePositionDTO> positions;
+    private List<MatchReferenceDTO> matches;
+
+
     @Override
     public String toString() {
         return "SummonerDTO{" +
@@ -23,8 +29,27 @@ public class SummonerDTO {
                 ", revisionDate=" + revisionDate +
                 ", id=" + id +
                 ", accountId=" + accountId +
+                ", positions=" + positions +
+                ", matches=" + matches +
                 '}';
     }
+
+    public List<MatchReferenceDTO> getMatches() {
+        return matches;
+    }
+
+    public void setMatches(List<MatchReferenceDTO> matches) {
+        this.matches = matches;
+    }
+
+    public Set<LeaguePositionDTO> getPositions() {
+        return positions;
+    }
+
+    public void setPositions(Set<LeaguePositionDTO> positions) {
+        this.positions = positions;
+    }
+
 
     public int getProfileIconId() {
         return profileIconId;

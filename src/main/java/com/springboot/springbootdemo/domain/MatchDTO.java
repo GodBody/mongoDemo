@@ -28,6 +28,35 @@ public class MatchDTO {
     private long gameCreation;
     private long gameDuration;
 
+    private boolean complete;
+
+    @Override
+    public String toString() {
+        return "MatchDTO{" +
+                "seasonId=" + seasonId +
+                ", queueId=" + queueId +
+                ", gameId=" + gameId +
+                ", gameVersion='" + gameVersion + '\'' +
+                ", platformId='" + platformId + '\'' +
+                ", gameMode='" + gameMode + '\'' +
+                ", mapId=" + mapId +
+                ", gameType='" + gameType + '\'' +
+                ", participantIdentities=" + participantIdentities +
+                ", teams=" + teams +
+                ", participants=" + participants +
+                ", gameCreation=" + gameCreation +
+                ", gameDuration=" + gameDuration +
+                ", complete=" + complete +
+                '}';
+    }
+
+    public boolean isComplete() {
+        return complete;
+    }
+
+    public void setComplete(boolean complete) {
+        this.complete = complete;
+    }
 
     public String getGameVersion() {
         return gameVersion;
@@ -131,15 +160,6 @@ public class MatchDTO {
 
     public void setParticipants(List<ParticipantDTO> participants) {
         this.participants = participants;
-    }
-
-    @Override
-    public String toString() {
-        return "MatchDTO [seasonId=" + seasonId + ", queueId=" + queueId + ", gameId=" + gameId + ", gameVersion="
-                + gameVersion + ", platformId=" + platformId + ", gameMode=" + gameMode + ", mapId=" + mapId
-                + ", gameType=" + gameType + ", participantIdentities=" + participantIdentities + ", teams=" + teams
-                + ", participants=" + participants + ", gameCreation=" + gameCreation + ", gameDuration=" + gameDuration
-                + "]";
     }
 
 }

@@ -13,18 +13,34 @@
 </head>
 <body>
 Main Page
+<form id="form" action="search" method="get" role="form">
 
-소환사 : <input type="text" id="summonerName">
+    소환사 : <input type="text" id="summonerName">
+    <input type="submit" value="search">
+</form>
+
 <button type="button" id="submit">검색</button>
+<button type="button" id="update">업데이트</button>
 </body>
 <script>
     $("#submit").on("click", function () {
-       var name = $("#summonerName").val();
-       console.log(name);
+        var name = $("#summonerName").val();
+        console.log(name);
 
-       $.get("http://localhost:8080/search?summonerName=" + name);
+        $.get("http://localhost:8080/search?summonerName=" + name);
+           self.location = "http://localhost:8080/search?summonerName=" + name;
 
     });
+
+    $("#update").on("click", function () {
+        var name = $("#summonerName").val();
+        console.log(name);
+
+        $.get("http://localhost:8080/update?summonerName=" + name);
+        self.location = "http://localhost:8080/search?summonerName=" + name;
+
+    });
+
 </script>
 
 </html>

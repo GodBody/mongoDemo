@@ -1,6 +1,7 @@
 package com.springboot.springbootdemo.domain;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document
@@ -11,6 +12,7 @@ public class LeaguePositionDTO {
 	private int losses;
 	private String leagueName;
 	private String playerOrTeamName;
+	@Id
 	private long playerOrTeamId;
 	private String tier;
 	private int leaguePoints;
