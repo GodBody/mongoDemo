@@ -16,9 +16,46 @@ public class TeamStatsDTO {
 	private int inhibitorKills;
 
 	private int totalKills;
-
 	private int totalDeaths;
 	private int totalAssist;
+	private int totalDamageDealtToChampions;
+	private int totalDamageTaken;
+
+	@Override
+	public String toString() {
+		return "TeamStatsDTO{" +
+				"teamId=" + teamId +
+				", firstBlood=" + firstBlood +
+				", firstTower=" + firstTower +
+				", firstInhibitor=" + firstInhibitor +
+				", firstRiftHerald=" + firstRiftHerald +
+				", baronKills=" + baronKills +
+				", dragonKills=" + dragonKills +
+				", towerKills=" + towerKills +
+				", inhibitorKills=" + inhibitorKills +
+				", totalKills=" + totalKills +
+				", totalDeaths=" + totalDeaths +
+				", totalAssist=" + totalAssist +
+				", totalDamageDealtToChampions=" + totalDamageDealtToChampions +
+				", totalDamageTaken=" + totalDamageTaken +
+				'}';
+	}
+
+	public int getTotalDamageTaken() {
+		return totalDamageTaken;
+	}
+
+	public void setTotalDamageTaken(int totalDamageTaken) {
+		this.totalDamageTaken = totalDamageTaken;
+	}
+
+	public int getTotalDamageDealtToChampions() {
+		return totalDamageDealtToChampions;
+	}
+
+	public void setTotalDamageDealtToChampions(int totalDamageDealtToChampions) {
+		this.totalDamageDealtToChampions = totalDamageDealtToChampions;
+	}
 
 	public int getTotalKills() {
 		return totalKills;
@@ -114,15 +151,6 @@ public class TeamStatsDTO {
 
 	public void setFirstTower(boolean firstTower) {
 		this.firstTower = firstTower;
-	}
-
-	@Override
-	public String toString() {
-		return "TeamStatsDTO [teamId=" + teamId + ", firstBlood=" + firstBlood + ", firstTower=" + firstTower
-				+ ", firstInhibitor=" + firstInhibitor + ", firstRiftHerald=" + firstRiftHerald + ", baronKills="
-				+ baronKills + ", dragonKills=" + dragonKills + ", towerKills=" + towerKills + ", inhibitorKills="
-				+ inhibitorKills + ", totalKills=" + totalKills + ", totalDeaths=" + totalDeaths + ", totalAssist="
-				+ totalAssist + "]";
 	}
 
 }

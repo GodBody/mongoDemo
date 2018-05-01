@@ -1,5 +1,6 @@
 package com.springboot.springbootdemo.domain;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -10,9 +11,12 @@ import java.util.Set;
 public class SummonerDTO {
     private int profileIconId;
     private String name;
+
     private long summonerLevel;
     private long revisionDate;
+
     @Id
+//    @JsonProperty("_id")
     private long id;
     private long accountId;
 

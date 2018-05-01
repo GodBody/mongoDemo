@@ -6,94 +6,153 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document
 public class LeaguePositionDTO {
-	private String rank;
-	private String queueType;
-	private int wins;
-	private int losses;
-	private String leagueName;
-	private String playerOrTeamName;
-	@Id
-	private long playerOrTeamId;
-	private String tier;
-	private int leaguePoints;
+    private String rank;
+    private String queueType;
+    private int wins;
+    private int losses;
+    private boolean veteran;
+    private boolean hotStreak;
 
-	public String getRank() {
-		return rank;
-	}
+    @Override
+    public String toString() {
+        return "LeaguePositionDTO{" +
+                "rank='" + rank + '\'' +
+                ", queueType='" + queueType + '\'' +
+                ", wins=" + wins +
+                ", losses=" + losses +
+                ", veteran=" + veteran +
+                ", hotStreak=" + hotStreak +
+                ", leagueName='" + leagueName + '\'' +
+                ", playerOrTeamName='" + playerOrTeamName + '\'' +
+                ", freshBlood=" + freshBlood +
+                ", inactive=" + inactive +
+                ", leagueId='" + leagueId + '\'' +
+                ", playerOrTeamId='" + playerOrTeamId + '\'' +
+                ", tier='" + tier + '\'' +
+                ", leaguePoints=" + leaguePoints +
+                '}';
+    }
 
-	public void setRank(String rank) {
-		this.rank = rank;
-	}
+    public boolean isVeteran() {
+        return veteran;
+    }
 
-	public String getQueueType() {
-		return queueType;
-	}
+    public void setVeteran(boolean veteran) {
+        this.veteran = veteran;
+    }
 
-	public void setQueueType(String queueType) {
-		this.queueType = queueType;
-	}
+    public boolean isHotStreak() {
+        return hotStreak;
+    }
 
-	public int getWins() {
-		return wins;
-	}
+    public void setHotStreak(boolean hotStreak) {
+        this.hotStreak = hotStreak;
+    }
 
-	public void setWins(int wins) {
-		this.wins = wins;
-	}
+    public boolean isFreshBlood() {
+        return freshBlood;
+    }
 
-	public int getLosses() {
-		return losses;
-	}
+    public void setFreshBlood(boolean freshBlood) {
+        this.freshBlood = freshBlood;
+    }
 
-	public void setLosses(int losses) {
-		this.losses = losses;
-	}
+    public boolean isInactive() {
+        return inactive;
+    }
 
-	public String getLeagueName() {
-		return leagueName;
-	}
+    public void setInactive(boolean inactive) {
+        this.inactive = inactive;
+    }
 
-	public void setLeagueName(String leagueName) {
-		this.leagueName = leagueName;
-	}
+    public String getLeagueId() {
+        return leagueId;
+    }
 
-	public String getPlayerOrTeamName() {
-		return playerOrTeamName;
-	}
+    public void setLeagueId(String leagueId) {
+        this.leagueId = leagueId;
+    }
 
-	public void setPlayerOrTeamName(String playerOrTeamName) {
-		this.playerOrTeamName = playerOrTeamName;
-	}
+    private String leagueName;
+    private String playerOrTeamName;
+    private boolean freshBlood;
+    private boolean inactive;
+    private String leagueId;
+    @Id
+    private String playerOrTeamId;
+    private String tier;
+    private int leaguePoints;
 
-	public long getPlayerOrTeamId() {
-		return playerOrTeamId;
-	}
+    public String getRank() {
+        return rank;
+    }
 
-	public void setPlayerOrTeamId(long playerOrTeamId) {
-		this.playerOrTeamId = playerOrTeamId;
-	}
+    public void setRank(String rank) {
+        this.rank = rank;
+    }
 
-	public String getTier() {
-		return tier;
-	}
+    public String getQueueType() {
+        return queueType;
+    }
 
-	public void setTier(String tier) {
-		this.tier = tier;
-	}
+    public void setQueueType(String queueType) {
+        this.queueType = queueType;
+    }
 
-	public int getLeaguePoints() {
-		return leaguePoints;
-	}
+    public int getWins() {
+        return wins;
+    }
 
-	public void setLeaguePoints(int leaguePoints) {
-		this.leaguePoints = leaguePoints;
-	}
+    public void setWins(int wins) {
+        this.wins = wins;
+    }
 
-	@Override
-	public String toString() {
-		return "LeaguePositionDTO [rank=" + rank + ", queueType=" + queueType + ", wins=" + wins + ", losses=" + losses
-				+ ", leagueName=" + leagueName + ", playerOrTeamName=" + playerOrTeamName + ", playerOrTeamId="
-				+ playerOrTeamId + ", tier=" + tier + ", leaguePoints=" + leaguePoints + "]";
-	}
+    public int getLosses() {
+        return losses;
+    }
+
+    public void setLosses(int losses) {
+        this.losses = losses;
+    }
+
+    public String getLeagueName() {
+        return leagueName;
+    }
+
+    public void setLeagueName(String leagueName) {
+        this.leagueName = leagueName;
+    }
+
+    public String getPlayerOrTeamName() {
+        return playerOrTeamName;
+    }
+
+    public void setPlayerOrTeamName(String playerOrTeamName) {
+        this.playerOrTeamName = playerOrTeamName;
+    }
+
+    public String getPlayerOrTeamId() {
+        return playerOrTeamId;
+    }
+
+    public void setPlayerOrTeamId(String playerOrTeamId) {
+        this.playerOrTeamId = playerOrTeamId;
+    }
+
+    public String getTier() {
+        return tier;
+    }
+
+    public void setTier(String tier) {
+        this.tier = tier;
+    }
+
+    public int getLeaguePoints() {
+        return leaguePoints;
+    }
+
+    public void setLeaguePoints(int leaguePoints) {
+        this.leaguePoints = leaguePoints;
+    }
 
 }

@@ -39,7 +39,7 @@ public class HomeController {
         headers.set("User-Agent",
                 "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML,like Gecko) Chrome/64.0.3282.186 Safari/537.36");
         headers.set("Accept-Language", "ko-KR,ko;q=0.9,en-US;q=0.8,en;q=0.7");
-        headers.set("X-Riot-Token", "RGAPI-296b0cb7-bd55-4315-b160-fd29327b64b6");
+        headers.set("X-Riot-Token", "RGAPI-7a81b5f9-9156-4741-bcaa-1d7e41610e14");
         return new HttpEntity<T>(headers);
 
     }
@@ -66,8 +66,14 @@ public class HomeController {
         insert(name);
 
         SummonerDTO summoner = mongo.findOne(Query.query(Criteria.where("name").is(name)), SummonerDTO.class, "Summoner");
-
-
+//        List<MatchDTO> str = mongo.find(Query.query(Criteria.where("participantIdentities").elemMatch(Criteria.where("player.summonerName").is(name))).addCriteria(Criteria.where("queueId").is(420)), MatchDTO.class, "Match");
+//        List<MatchDTO> str2 = mongo.find(Query.query(Criteria.where("participantIdentities").elemMatch(Criteria.where("player.summonerName").is(name))), MatchDTO.class, "Match");
+//
+//        System.out.println("크기 : " + str.size());
+//        System.out.println("크기 : " + str2.size());
+//        for (int i = 0; i < str.size(); i++) {
+//            System.out.print(str.get(i).toString());
+//        }
         List<MatchDTO> matchList = new ArrayList<MatchDTO>();
         System.out.println("검색된 게임 수 : " + summoner.getMatches().size());
         for (int i = 0; i < summoner.getMatches().size(); i++) {
@@ -75,6 +81,8 @@ public class HomeController {
             MatchDTO match = mongo.findOne(Query.query(Criteria.where("_id").is(gameId)), MatchDTO.class, "Match");
             for (int j = 0; j < match.getParticipants().size(); j++) {
                 ParticipantDTO p = match.getParticipants().get(j);
+
+
                 p.getStats().setKdaRatio();
 
 
@@ -90,10 +98,10 @@ public class HomeController {
                 if (!match.isComplete()) {
                     if (p.getStats().isWin()) {
                         mongo.updateFirst(Query.query(Criteria.where("_id").is(p.getChampionId())), new Update().inc("winCount", 1), "Champion");
-                        System.out.println("승리 카운트 !! " + p.getChampionName() + " / " + p.getStats().isWin());
+//                        System.out.println("승리 카운트 !! " + p.getChampionName() + " / " + p.getStats().isWin());
                     } else {
                         mongo.updateFirst(Query.query(Criteria.where("_id").is(p.getChampionId())), new Update().inc("lossCount", 1), "Champion");
-                        System.out.println("패배 카운트 !! " + p.getChampionName() + " / " + p.getStats().isWin());
+//                        System.out.println("패배 카운트 !! " + p.getChampionName() + " / " + p.getStats().isWin());
                     }
                 }
                 SummonerSpellDTO spell1 = mongo.findOne(Query.query(Criteria.where("_id").is(id1)), SummonerSpellDTO.class, "SummonerSpell");
@@ -105,8 +113,55 @@ public class HomeController {
                 }
             }
             mongo.updateFirst(Query.query(Criteria.where("_id").is(gameId)), new Update().set("complete", true), "Match");
-            
+
             matchList.add(match);
+        }
+        for (int i = 0; i < matchList.size(); i++) {
+            MatchDTO matchDTO = matchList.get(i);
+            int totalKill = 0;
+            int totalDeath = 0;
+            int totalAssist = 0;
+            int totalDamageDealtToChampions = 0;
+            int totalDamageTaken = 0;
+            for (int j = 0; j < matchDTO.getParticipants().size(); j++) {
+                ParticipantDTO p = matchDTO.getParticipants().get(j);
+
+
+                if (j <= 4) {
+                    totalKill += p.getStats().getKills();
+                    totalDeath += p.getStats().getDeaths();
+                    totalAssist += p.getStats().getAssists();
+                    totalDamageDealtToChampions += p.getStats().getTotalDamageDealtToChampions();
+                    totalDamageTaken += p.getStats().getTotalDamageTaken();
+
+                    matchDTO.getTeams().get(0).setTotalKills(totalKill);
+                    matchDTO.getTeams().get(0).setTotalDeaths(totalDeath);
+                    matchDTO.getTeams().get(0).setTotalAssist(totalAssist);
+                    matchDTO.getTeams().get(0).setTotalDamageDealtToChampions(totalDamageDealtToChampions);
+                    matchDTO.getTeams().get(0).setTotalDamageTaken(totalDamageTaken);
+
+                    if (j == 4) {
+                        totalKill = 0;
+                        totalDeath = 0;
+                        totalAssist = 0;
+                        totalDamageDealtToChampions = 0;
+                        totalDamageTaken = 0;
+                    }
+                } else {
+                    totalKill += p.getStats().getKills();
+                    totalDeath += p.getStats().getDeaths();
+                    totalAssist += p.getStats().getAssists();
+                    totalDamageDealtToChampions += p.getStats().getTotalDamageDealtToChampions();
+                    totalDamageTaken += p.getStats().getTotalDamageTaken();
+
+
+                    matchDTO.getTeams().get(1).setTotalKills(totalKill);
+                    matchDTO.getTeams().get(1).setTotalDeaths(totalDeath);
+                    matchDTO.getTeams().get(1).setTotalAssist(totalAssist);
+                    matchDTO.getTeams().get(1).setTotalDamageDealtToChampions(totalDamageDealtToChampions);
+                    matchDTO.getTeams().get(0).setTotalDamageTaken(totalDamageTaken);
+                }
+            }
         }
 
 
@@ -202,10 +257,10 @@ public class HomeController {
                 else {
                     if (o1.getWinRate() > o2.getWinRate())
                         return -1;
-                    else if(o1.getWinRate() < o2.getWinRate())
+                    else if (o1.getWinRate() < o2.getWinRate())
                         return 1;
                     else {
-                        if(o1.getKdaRatio() > o2.getKdaRatio())
+                        if (o1.getKdaRatio() > o2.getKdaRatio())
                             return -1;
                         else
                             return 1;
@@ -215,9 +270,9 @@ public class HomeController {
             }
         });
 
-        for (int i = 0; i < list.size(); i++) {
-            System.out.println(list.get(i).getChampionName() + "/" + list.get(i).getGameCount() + "/" + list.get(i).getWinRate());
-        }
+//        for (int i = 0; i < list.size(); i++) {
+//            System.out.println(list.get(i).getChampionName() + "/" + list.get(i).getGameCount() + "/" + list.get(i).getWinRate());
+//        }
 
         List<ChampionDTO> championList = mongo.findAll(ChampionDTO.class, "Champion");
 
@@ -226,8 +281,14 @@ public class HomeController {
             public int compare(ChampionDTO o1, ChampionDTO o2) {
                 if (o1.getWinCount() + o1.getLossCount() > o2.getWinCount() + o2.getLossCount())
                     return -1;
-                else
+                else if (o1.getWinCount() + o1.getLossCount() == o2.getWinCount() + o2.getLossCount()) {
+                    if (o1.getWinCount() > o2.getWinCount())
+                        return -1;
+                    else
+                        return 1;
+                } else
                     return 1;
+
             }
         });
 
@@ -330,7 +391,7 @@ public class HomeController {
                 // SEARCH By accountId for recent 20 games info
                 String recent = "https://kr.api.riotgames.com/lol/match/v3/matchlists/by-account/";
                 HttpEntity<MatchListDTO> requestEn3 = setHeaders();
-                ResponseEntity<MatchListDTO> responseEn3 = restTemplate.exchange(recent + String.valueOf(summonerDTO.getAccountId()) + "?endIndex=30", HttpMethod.GET, requestEn3,
+                ResponseEntity<MatchListDTO> responseEn3 = restTemplate.exchange(recent + String.valueOf(summonerDTO.getAccountId()) + "?endIndex=60", HttpMethod.GET, requestEn3,
                         MatchListDTO.class);
 
                 headers = responseEn3.getHeaders();
@@ -385,7 +446,7 @@ public class HomeController {
                 // SEARCH By accountId for recent 20 games info
                 String recent = "https://kr.api.riotgames.com/lol/match/v3/matchlists/by-account/";
                 HttpEntity<MatchListDTO> requestEn3 = setHeaders();
-                ResponseEntity<MatchListDTO> responseEn3 = restTemplate.exchange(recent + String.valueOf(summonerDTO.getAccountId()) + "/recent", HttpMethod.GET, requestEn3,
+                ResponseEntity<MatchListDTO> responseEn3 = restTemplate.exchange(recent + String.valueOf(summonerDTO.getAccountId()) + "?endIndex=20", HttpMethod.GET, requestEn3,
                         MatchListDTO.class);
 
                 headers = responseEn3.getHeaders();
