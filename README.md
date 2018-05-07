@@ -17,7 +17,9 @@
 * DB : MySQL, MongoDB
 * Server : Tomcat
 * Build : Maven
-## 스크린샷
+## 기능
+* 소환사 검색 ( 기본적인 소환사 정보 표기, 참여한 게임 정보, 선택한 챔피언 별 통계 )
+* 전체 챔피언 별 통계 ( 승률 ) 
 ## DB Collection
 * Champion : 게임 캐릭터 (업데이트 시 자동 갱신)
 * Item : 게임 아이템 (업데이트 시 자동 갱신)
