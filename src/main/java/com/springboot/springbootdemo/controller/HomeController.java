@@ -7,9 +7,6 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.http.*;
-import org.springframework.retry.RetryPolicy;
-import org.springframework.retry.policy.SimpleRetryPolicy;
-import org.springframework.retry.support.RetryTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,28 +15,24 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
-import java.net.URL;
-import java.net.URLConnection;
 import java.util.*;
 
 @Controller
 public class HomeController {
 
     private static RestTemplate restTemplate = new RestTemplate();
-    private static RetryTemplate retryTemplate = new RetryTemplate();
 
     @Autowired
     private MongoTemplate mongo;
 
     public static <T> HttpEntity<T> setHeaders() {
         HttpHeaders headers = new HttpHeaders();
-//        headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
         headers.set("Origin", "https://developer.riotgames.com");
         headers.set("Accept-Charset", "application/x-www-form-urlencoded; charset=UTF-8");
         headers.set("User-Agent",
                 "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML,like Gecko) Chrome/64.0.3282.186 Safari/537.36");
         headers.set("Accept-Language", "ko-KR,ko;q=0.9,en-US;q=0.8,en;q=0.7");
-        headers.set("X-Riot-Token", "RGAPI-7a81b5f9-9156-4741-bcaa-1d7e41610e14");
+        headers.set("X-Riot-Token", "RGAPI-da16f23a-2c91-45b7-97d4-2258caac45d8");
         return new HttpEntity<T>(headers);
 
     }
@@ -48,34 +41,28 @@ public class HomeController {
     public void index() {
     }
 
-    @RequestMapping(value = "/update", method = RequestMethod.GET)
-    public String update(@RequestParam(value = "summonerName") String name, Model model) throws Exception {
-        System.out.println("UPDATE new summoner into mongoDB ");
-        insert(name);
-
-        return "search";
-    }
-
-
     @RequestMapping(value = "/search", method = RequestMethod.GET)
     public String search(@RequestParam(value = "summonerName") String name, Model model) throws Exception {
 
         System.out.println();
-        System.out.println("검색된 소환사 : " + name);
+        System.out.println("Retrieved summoner : " + name);
 
         insert(name);
 
-        SummonerDTO summoner = mongo.findOne(Query.query(Criteria.where("name").is(name)), SummonerDTO.class, "Summoner");
-//        List<MatchDTO> str = mongo.find(Query.query(Criteria.where("participantIdentities").elemMatch(Criteria.where("player.summonerName").is(name))).addCriteria(Criteria.where("queueId").is(420)), MatchDTO.class, "Match");
-//        List<MatchDTO> str2 = mongo.find(Query.query(Criteria.where("participantIdentities").elemMatch(Criteria.where("player.summonerName").is(name))), MatchDTO.class, "Match");
-//
-//        System.out.println("크기 : " + str.size());
-//        System.out.println("크기 : " + str2.size());
-//        for (int i = 0; i < str.size(); i++) {
-//            System.out.print(str.get(i).toString());
-//        }
+        String searchByName = "https://kr.api.riotgames.com/lol/summoner/v3/summoners/by-name/";
+
+        HttpEntity<SummonerDTO> requestEn = setHeaders();
+        ResponseEntity<SummonerDTO> responseEn = restTemplate.exchange(searchByName + name, HttpMethod.GET, requestEn,
+                SummonerDTO.class);
+
+
+        long summonerId = responseEn.getBody().getId();
+
+        SummonerDTO summoner = mongo.findOne(Query.query(Criteria.where("_id").is(summonerId)), SummonerDTO.class, "Summoner");
+
+
         List<MatchDTO> matchList = new ArrayList<MatchDTO>();
-        System.out.println("검색된 게임 수 : " + summoner.getMatches().size());
+        System.out.println("Number of games retrieved : " + summoner.getMatches().size());
         for (int i = 0; i < summoner.getMatches().size(); i++) {
             long gameId = summoner.getMatches().get(i).getGameId();
             MatchDTO match = mongo.findOne(Query.query(Criteria.where("_id").is(gameId)), MatchDTO.class, "Match");
@@ -98,10 +85,8 @@ public class HomeController {
                 if (!match.isComplete()) {
                     if (p.getStats().isWin()) {
                         mongo.updateFirst(Query.query(Criteria.where("_id").is(p.getChampionId())), new Update().inc("winCount", 1), "Champion");
-//                        System.out.println("승리 카운트 !! " + p.getChampionName() + " / " + p.getStats().isWin());
                     } else {
                         mongo.updateFirst(Query.query(Criteria.where("_id").is(p.getChampionId())), new Update().inc("lossCount", 1), "Champion");
-//                        System.out.println("패배 카운트 !! " + p.getChampionName() + " / " + p.getStats().isWin());
                     }
                 }
                 SummonerSpellDTO spell1 = mongo.findOne(Query.query(Criteria.where("_id").is(id1)), SummonerSpellDTO.class, "SummonerSpell");
@@ -166,11 +151,11 @@ public class HomeController {
 
 
         List<MatchDTO> tempList = new ArrayList<>();
-        System.out.println("matchList Size : " + matchList.size());
+        System.out.println("Number of games registered : " + matchList.size());
         for (int i = 0; i < matchList.size(); i++) {
             MatchDTO match = matchList.get(i);
             for (int j = 0; j < match.getParticipantIdentities().size(); j++) {
-                if (match.getParticipantIdentities().get(j).getPlayer().getSummonerName().equals(name)) {
+                if (match.getParticipantIdentities().get(j).getPlayer().getSummonerId() == summonerId) {
                     MatchDTO tempDTO = new MatchDTO();
                     tempDTO.setParticipants(new ArrayList<>());
 
@@ -185,12 +170,10 @@ public class HomeController {
         Map<String, MostChampion> map = new HashMap<>();
         List<MostChampion> list = new ArrayList<>();
 
-        System.out.println("tempList Size : " + tempList.size());
         for (int i = 0; i < tempList.size(); i++) {
             for (int j = 0; j < tempList.get(i).getParticipants().size(); j++) {
 
                 String cName = tempList.get(i).getParticipants().get(j).getChampionName();
-                int cId = tempList.get(i).getParticipants().get(j).getChampionId();
 
                 boolean isWin = tempList.get(i).getParticipants().get(j).getStats().isWin();
                 int kill = tempList.get(i).getParticipants().get(j).getStats().getKills();
@@ -205,7 +188,7 @@ public class HomeController {
                     if (isWin)
                         get.addWinCount();
                     get.setLooseCount();
-                    ;
+
                     get.addKill(kill);
                     get.addDeath(death);
                     get.addAssist(assist);
@@ -270,9 +253,6 @@ public class HomeController {
             }
         });
 
-//        for (int i = 0; i < list.size(); i++) {
-//            System.out.println(list.get(i).getChampionName() + "/" + list.get(i).getGameCount() + "/" + list.get(i).getWinRate());
-//        }
 
         List<ChampionDTO> championList = mongo.findAll(ChampionDTO.class, "Champion");
 
@@ -292,74 +272,22 @@ public class HomeController {
             }
         });
 
+
+        model.addAttribute("summoner", summoner);
+        model.addAttribute("summonerName", name);
+        model.addAttribute("matchList", matchList);
         model.addAttribute("championList", championList);
         model.addAttribute("mostList", list);
-        model.addAttribute("tempList", tempList);
-        model.addAttribute("summoner", summoner);
-        model.addAttribute("matchList", matchList);
-        model.addAttribute("summonerName", name);
 
         return "search";
     }
 
 
     public void insert(String name) throws HttpClientErrorException {
+
         HttpHeaders headers = null;
 
-        /*
 
-        챔피언 정보 등록 부분 (1회성)
-
-        HttpEntity<ChampionListDTO> requestC = setHeaders();
-        String championList = "https://kr.api.riotgames.com/lol/static-data/v3/champions?locale=en_US&champListData=image&tags=image&dataById=false";
-        ResponseEntity<ChampionListDTO> responseC = restTemplate.exchange(championList, HttpMethod.GET, requestC, ChampionListDTO.class);
-        ChampionListDTO cList = responseC.getBody();
-        Map<String, ChampionDTO> cmap = cList.getData();
-
-        List<ChampionDTO> list = new ArrayList<>(cmap.values());
-
-        for (int i = 0; i < list.size(); i++) {
-            System.out.println(list.get(i).getId() + " / " + list.get(i).getName());
-            mongo.save(list.get(i), "Champion");
-        }
-
-        */
-
-        /*
-
-        아이템 정보 등록 부분
-
-        HttpEntity<ItemListDTO> requestC = setHeaders();
-        String itemList = "https://kr.api.riotgames.com/lol/static-data/v3/items?locale=ko_KR&itemListData=image&tags=image&api_key=RGAPI-907abf3b-08ed-4370-b63f-a80246800064";
-        ResponseEntity<ItemListDTO> responseC = restTemplate.exchange(itemList, HttpMethod.GET, requestC, ItemListDTO.class);
-        ItemListDTO iList = responseC.getBody();
-        Map<String, ItemDTO> imap = iList.getData();
-
-        List<ItemDTO> list = new ArrayList<>(imap.values());
-
-        for (int i = 0; i < list.size(); i++) {
-            System.out.println(list.get(i).getId() + " / " + list.get(i).getPlaintext());
-            mongo.save(list.get(i), "Item");
-        }
-        */
-
-        /*
-
-        스펠 정보 등록 부분
-
-        HttpEntity<SummonerSpellListDTO> requestC = setHeaders();
-        String spellList = "https://kr.api.riotgames.com/lol/static-data/v3/summoner-spells?locale=ko_KR&spellListData=image&dataById=false&tags=image&api_key=RGAPI-907abf3b-08ed-4370-b63f-a80246800064";
-        ResponseEntity<SummonerSpellListDTO> responseC = restTemplate.exchange(spellList, HttpMethod.GET, requestC, SummonerSpellListDTO.class);
-        SummonerSpellListDTO sList = responseC.getBody();
-        Map<String, SummonerSpellDTO> smap = sList.getData();
-
-        List<SummonerSpellDTO> list = new ArrayList<>(smap.values());
-
-        for (int i = 0; i < list.size(); i++) {
-            System.out.println(list.get(i).getId() + " / " + list.get(i).getDescription());
-            mongo.save(list.get(i), "SummonerSpell");
-        }
-        */
         try {
             // SEARCH By Name
             String searchByName = "https://kr.api.riotgames.com/lol/summoner/v3/summoners/by-name/";
@@ -372,12 +300,12 @@ public class HomeController {
 
             SummonerDTO summonerDTO = responseEn.getBody();
 
-            SummonerDTO summonerDB = mongo.findOne(Query.query(Criteria.where("name").is(name)), SummonerDTO.class, "Summoner");
+            SummonerDTO summonerDB = mongo.findOne(Query.query(Criteria.where("_id").is(summonerDTO.getId())), SummonerDTO.class, "Summoner");
 
             // 새로운 소환사라면?
-            boolean check = mongo.exists(Query.query(Criteria.where("name").is(name)), "Summoner");
+            boolean check = mongo.exists(Query.query(Criteria.where("_id").is(summonerDTO.getId())), "Summoner");
             if (!check) {
-                System.out.println("새로운 정보 등록");
+                System.out.println("New summoner registration");
                 // SEARCH By id for tier info
                 String tierById = "https://kr.api.riotgames.com/lol/league/v3/positions/by-summoner/";
 
@@ -391,7 +319,7 @@ public class HomeController {
                 // SEARCH By accountId for recent 20 games info
                 String recent = "https://kr.api.riotgames.com/lol/match/v3/matchlists/by-account/";
                 HttpEntity<MatchListDTO> requestEn3 = setHeaders();
-                ResponseEntity<MatchListDTO> responseEn3 = restTemplate.exchange(recent + String.valueOf(summonerDTO.getAccountId()) + "?endIndex=60", HttpMethod.GET, requestEn3,
+                ResponseEntity<MatchListDTO> responseEn3 = restTemplate.exchange(recent + String.valueOf(summonerDTO.getAccountId()) + "?endIndex=20", HttpMethod.GET, requestEn3,
                         MatchListDTO.class);
 
                 headers = responseEn3.getHeaders();
@@ -432,7 +360,7 @@ public class HomeController {
             // 갱신 될 정보가 있다면?
             else if (summonerDB.getRevisionDate() < summonerDTO.getRevisionDate()) {
 
-                System.out.println("새로운 정보 갱신");
+                System.out.println("Summoner information Update ");
                 // SEARCH By id for tier info
                 String tierById = "https://kr.api.riotgames.com/lol/league/v3/positions/by-summoner/";
 
@@ -459,7 +387,7 @@ public class HomeController {
                 for (int i = matches.size() - 1; i >= 0; i--) {
                     if (matches.get(i).getTimestamp() > matchesDB.get(0).getTimestamp()) {
                         matchesDB.add(0, matches.get(i));
-                        System.out.println("새로운 gameId : " + matches.get(i).getGameId() + "/ champion : " + matches.get(i).getChampion());
+                        System.out.println("NEW gameId : " + matches.get(i).getGameId() + "/ championId : " + matches.get(i).getChampion());
                     }
                 }
 
@@ -489,7 +417,7 @@ public class HomeController {
                 // INSERT mongoDB
                 mongo.save(summonerDTO, "Summoner");
             } else {
-                System.out.println("갱신될 정보가 없습니다.");
+                System.out.println("No infomation to be updated");
 
             }
 
@@ -498,6 +426,53 @@ public class HomeController {
             System.out.println("error!!!");
             System.out.println("headers : " + headers.toString());
         }
+    }
+
+    // Champion, Item, Spell Data update method (MANUAL)
+    public void updateData() {
+
+
+        HttpEntity<ChampionListDTO> requestC = setHeaders();
+        String championList = "https://kr.api.riotgames.com/lol/static-data/v3/champions?locale=en_US&champListData=image&tags=image&dataById=false";
+        ResponseEntity<ChampionListDTO> responseC = restTemplate.exchange(championList, HttpMethod.GET, requestC, ChampionListDTO.class);
+        ChampionListDTO championListDTO = responseC.getBody();
+        Map<String, ChampionDTO> cmap = championListDTO.getData();
+
+        List<ChampionDTO> clist = new ArrayList<>(cmap.values());
+
+        for (int i = 0; i < clist.size(); i++) {
+            System.out.println(clist.get(i).getId() + " / " + clist.get(i).getName());
+            mongo.save(clist.get(i), "Champion");
+        }
+
+
+        HttpEntity<ItemListDTO> requestI = setHeaders();
+        String itemList = "https://kr.api.riotgames.com/lol/static-data/v3/items?locale=ko_KR&itemListData=image&tags=image";
+        ResponseEntity<ItemListDTO> responseI = restTemplate.exchange(itemList, HttpMethod.GET, requestI, ItemListDTO.class);
+        ItemListDTO itemListDTO = responseI.getBody();
+        Map<String, ItemDTO> imap = itemListDTO.getData();
+
+        List<ItemDTO> ilist = new ArrayList<>(imap.values());
+
+        for (int i = 0; i < ilist.size(); i++) {
+            System.out.println(ilist.get(i).getId() + " / " + ilist.get(i).getPlaintext());
+            mongo.save(ilist.get(i), "Item");
+        }
+
+
+        HttpEntity<SummonerSpellListDTO> requestS = setHeaders();
+        String spellList = "https://kr.api.riotgames.com/lol/static-data/v3/summoner-spells?locale=ko_KR&spellListData=image&dataById=false&tags=image";
+        ResponseEntity<SummonerSpellListDTO> responseS = restTemplate.exchange(spellList, HttpMethod.GET, requestC, SummonerSpellListDTO.class);
+        SummonerSpellListDTO summonerSpellListDTO = responseS.getBody();
+        Map<String, SummonerSpellDTO> smap = summonerSpellListDTO.getData();
+
+        List<SummonerSpellDTO> slist = new ArrayList<>(smap.values());
+
+        for (int i = 0; i < slist.size(); i++) {
+            System.out.println(slist.get(i).getId() + " / " + slist.get(i).getDescription());
+            mongo.save(slist.get(i), "SummonerSpell");
+        }
+
     }
 
 

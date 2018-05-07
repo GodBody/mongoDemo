@@ -55,7 +55,6 @@
     <div class="container">
 
 
-        <p><a class="btn btn-primary btn-lg" href="#" role="button">Learn more &raquo;</a></p>
     </div>
 </div>
 
@@ -69,7 +68,7 @@
 
         </div>
         <div class="col-md-4">
-            <h2>Heading</h2>
+            <h2>LeagueOfLegend match analytics Application</h2>
 
         </div>
     </div>
@@ -77,7 +76,7 @@
     <hr>
 
     <footer>
-        <p>&copy; Company 2014</p>
+
     </footer>
 </div> <!-- /container -->
 </body>
