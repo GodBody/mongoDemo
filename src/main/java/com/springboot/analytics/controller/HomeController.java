@@ -55,11 +55,9 @@ public class HomeController {
         ResponseEntity<SummonerDTO> responseEn = restTemplate.exchange(searchByName + name, HttpMethod.GET, requestEn,
                 SummonerDTO.class);
 
-
         long summonerId = responseEn.getBody().getId();
 
         SummonerDTO summoner = mongo.findOne(Query.query(Criteria.where("_id").is(summonerId)), SummonerDTO.class, "Summoner");
-
 
         List<MatchDTO> matchList = new ArrayList<MatchDTO>();
         System.out.println("Number of games retrieved : " + summoner.getMatches().size());
@@ -69,9 +67,7 @@ public class HomeController {
             for (int j = 0; j < match.getParticipants().size(); j++) {
                 ParticipantDTO p = match.getParticipants().get(j);
 
-
                 p.getStats().setKdaRatio();
-
 
                 int id = p.getChampionId();
 
@@ -110,8 +106,7 @@ public class HomeController {
             int totalDamageTaken = 0;
             for (int j = 0; j < matchDTO.getParticipants().size(); j++) {
                 ParticipantDTO p = matchDTO.getParticipants().get(j);
-
-
+                
                 if (j <= 4) {
                     totalKill += p.getStats().getKills();
                     totalDeath += p.getStats().getDeaths();
@@ -149,7 +144,6 @@ public class HomeController {
             }
         }
 
-
         List<MatchDTO> tempList = new ArrayList<>();
         System.out.println("Number of games registered : " + matchList.size());
         for (int i = 0; i < matchList.size(); i++) {
@@ -163,9 +157,7 @@ public class HomeController {
                     tempList.add(tempDTO);
                 }
             }
-
         }
-
 
         Map<String, MostChampion> map = new HashMap<>();
         List<MostChampion> list = new ArrayList<>();
@@ -185,21 +177,20 @@ public class HomeController {
                 if (map.containsKey(cName)) {
                     MostChampion get = map.get(cName);
                     get.addGameCount();
+                    
                     if (isWin)
                         get.addWinCount();
                     get.setLooseCount();
-
                     get.addKill(kill);
                     get.addDeath(death);
                     get.addAssist(assist);
 
                     map.put(cName, get);
 
-
                 } else {
                     mostChampion.setChampionName(cName);
-
                     mostChampion.setGameCount(1);
+                    
                     if (isWin)
                         mostChampion.setWinCount(1);
                     mostChampion.setLooseCount();
@@ -208,14 +199,9 @@ public class HomeController {
                     mostChampion.setAssist(assist);
 
                     map.put(cName, mostChampion);
-
-
                 }
-
-
             }
         }
-
 
         // map에서 get하여 kda, winrate set -> list.add
         Iterator<String> itr = map.keySet().iterator();
@@ -224,9 +210,7 @@ public class HomeController {
             map.get(key).setKdaRatio();
             map.get(key).setWinRate();
             list.add(map.get(key));
-
         }
-
 
         // list sort
         Collections.sort(list, new Comparator<MostChampion>() {
@@ -248,11 +232,9 @@ public class HomeController {
                         else
                             return 1;
                     }
-
                 }
             }
         });
-
 
         List<ChampionDTO> championList = mongo.findAll(ChampionDTO.class, "Champion");
 
@@ -268,10 +250,8 @@ public class HomeController {
                         return 1;
                 } else
                     return 1;
-
             }
         });
-
 
         model.addAttribute("summoner", summoner);
         model.addAttribute("summonerName", name);
@@ -286,7 +266,6 @@ public class HomeController {
     public void insert(String name) throws HttpClientErrorException {
 
         HttpHeaders headers = null;
-
 
         try {
             // SEARCH By Name
@@ -330,29 +309,19 @@ public class HomeController {
                 summonerDTO.setPositions(positions);
                 summonerDTO.setMatches(matches);
 
-
                 // SEARCH By gameId for each match info ( 20 games )
-
-
                 for (int i = 0; i < matches.size(); i++) {
-
 
                     String matchById = "https://kr.api.riotgames.com/lol/match/v3/matches/";
 
-
                     HttpEntity<MatchDTO> request = setHeaders();
-
-
                     ResponseEntity<MatchDTO> response = restTemplate.exchange(matchById + matches.get(i).getGameId(), HttpMethod.GET, request, MatchDTO.class);
 
                     headers = response.getHeaders();
 
                     MatchDTO match = response.getBody();
                     mongo.save(match, "Match");
-
                 }
-
-
                 // INSERT mongoDB
                 mongo.save(summonerDTO, "Summoner");
             }
@@ -390,13 +359,10 @@ public class HomeController {
                         System.out.println("NEW gameId : " + matches.get(i).getGameId() + "/ championId : " + matches.get(i).getChampion());
                     }
                 }
-
-
                 // SET positions, matches IN summonerDTO
                 summonerDTO.setPositions(positions);
                 summonerDTO.setMatches(matchesDB);
-
-
+                
                 // SEARCH By gameId for each match info ( 20 games )
                 for (int i = 0; i < matches.size(); i++) {
                     String matchById = "https://kr.api.riotgames.com/lol/match/v3/matches/";
@@ -408,12 +374,9 @@ public class HomeController {
 
                     MatchDTO match = response.getBody();
 
-
                     mongo.save(match, "Match");
 
                 }
-
-
                 // INSERT mongoDB
                 mongo.save(summonerDTO, "Summoner");
             } else {
@@ -427,10 +390,9 @@ public class HomeController {
             System.out.println("headers : " + headers.toString());
         }
     }
-
+    
     // Champion, Item, Spell Data update method (MANUAL)
     public void updateData() {
-
 
         HttpEntity<ChampionListDTO> requestC = setHeaders();
         String championList = "https://kr.api.riotgames.com/lol/static-data/v3/champions?locale=en_US&champListData=image&tags=image&dataById=false";
@@ -445,7 +407,6 @@ public class HomeController {
             mongo.save(clist.get(i), "Champion");
         }
 
-
         HttpEntity<ItemListDTO> requestI = setHeaders();
         String itemList = "https://kr.api.riotgames.com/lol/static-data/v3/items?locale=ko_KR&itemListData=image&tags=image";
         ResponseEntity<ItemListDTO> responseI = restTemplate.exchange(itemList, HttpMethod.GET, requestI, ItemListDTO.class);
@@ -459,7 +420,6 @@ public class HomeController {
             mongo.save(ilist.get(i), "Item");
         }
 
-
         HttpEntity<SummonerSpellListDTO> requestS = setHeaders();
         String spellList = "https://kr.api.riotgames.com/lol/static-data/v3/summoner-spells?locale=ko_KR&spellListData=image&dataById=false&tags=image";
         ResponseEntity<SummonerSpellListDTO> responseS = restTemplate.exchange(spellList, HttpMethod.GET, requestC, SummonerSpellListDTO.class);
@@ -472,11 +432,5 @@ public class HomeController {
             System.out.println(slist.get(i).getId() + " / " + slist.get(i).getDescription());
             mongo.save(slist.get(i), "SummonerSpell");
         }
-
     }
-
-
 }
-
-
-
