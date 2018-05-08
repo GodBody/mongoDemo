@@ -41,7 +41,8 @@
 3. 하단에 Captcha 인증 후 regenerate key 눌러서 갱신한 후 복사.
 <img src = "./img/갱신.png" width="400" height="300"></img>
 <hr/>
-4. "X-Riot-Token" 부분의 2번째 param에 복사한 키를 붙여넣기
+4. lol-analytics-spring-boot/src/main/java/com/springboot/analytics/controller/HomeController.java 파일의 
+   상단 setHeaders 메소드의 "X-Riot-Token" 부분의 2번째 param에 복사한 키를 붙여넣기.
 <img src = "./img/setHeaders.png" ></img>
 <hr/>
 5. 실행 후 main 확인
