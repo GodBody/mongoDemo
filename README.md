@@ -27,6 +27,9 @@
 * Summoner : 등록된 게임 사용자 정보
 * SummonerSpell : 게임 스킬(업데이트 시 자동 갱신)
 
+## 사용 방법
+* ![메인](.img/developer 메인.png)
+
 
 
 
