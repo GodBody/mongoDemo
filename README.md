@@ -32,16 +32,16 @@
 1. https://developer.riotgames.com/ 접속
 <hr/>
 2. 로그인 (ID : knoc3885 / PW : vlckd123!@)
-![main](./img/로그인.png) {: width="100px" height="100px"}
+![main](./img/로그인.png) {width="100px" height="100px"}
 <hr/>
 3. 하단에 captcha 인증 후 regenerate key 눌러서 key 갱신하고 복사
-![main](./img/갱신.png) {: width="100" height="100"}
+![main](./img/갱신.png) {width="100" height="100"}
 <hr/>
 4. "X-Riot-Token" 부분의 2번째 param에 복사한 키를 붙여넣기
-![main](./img/setHeaders.png) {: width="100" height="100"}
+![main](./img/setHeaders.png) {width="100" height="100"}
 <hr/>
 5. 실행 후 main 확인
-![main](./img/메인.png) {: width="100" height="100"}
+![main](./img/메인.png) {width="100" height="100"}
 <hr/>
 
 
