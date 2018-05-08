@@ -1,4 +1,4 @@
-package com.springboot.springbootdemo.domain;
+package com.springboot.analytics.domain;
 
 public class PlayerDTO {
 	

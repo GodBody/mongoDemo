@@ -1,14 +1,13 @@
-package com.springboot.springbootdemo.domain;
+package com.springboot.analytics.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.List;
 
 @Document
-public class MatchTransferDTO {
+public class MatchDTO {
     private int seasonId;
     private int queueId;
     @Id
@@ -28,6 +27,35 @@ public class MatchTransferDTO {
     private long gameCreation;
     private long gameDuration;
 
+    private boolean complete;
+
+    @Override
+    public String toString() {
+        return "MatchDTO{" +
+                "seasonId=" + seasonId +
+                ", queueId=" + queueId +
+                ", gameId=" + gameId +
+                ", gameVersion='" + gameVersion + '\'' +
+                ", platformId='" + platformId + '\'' +
+                ", gameMode='" + gameMode + '\'' +
+                ", mapId=" + mapId +
+                ", gameType='" + gameType + '\'' +
+                ", participantIdentities=" + participantIdentities +
+                ", teams=" + teams +
+                ", participants=" + participants +
+                ", gameCreation=" + gameCreation +
+                ", gameDuration=" + gameDuration +
+                ", complete=" + complete +
+                '}';
+    }
+
+    public boolean isComplete() {
+        return complete;
+    }
+
+    public void setComplete(boolean complete) {
+        this.complete = complete;
+    }
 
     public String getGameVersion() {
         return gameVersion;
@@ -131,25 +159,6 @@ public class MatchTransferDTO {
 
     public void setParticipants(List<ParticipantDTO> participants) {
         this.participants = participants;
-    }
-
-    @Override
-    public String toString() {
-        return "MatchDTO{" +
-                "seasonId=" + seasonId +
-                ", queueId=" + queueId +
-                ", gameId=" + gameId +
-                ", gameVersion='" + gameVersion + '\'' +
-                ", platformId='" + platformId + '\'' +
-                ", gameMode='" + gameMode + '\'' +
-                ", mapId=" + mapId +
-                ", gameType='" + gameType + '\'' +
-                ", participantIdentities=" + participantIdentities +
-                ", teams=" + teams +
-                ", participants=" + participants +
-                ", gameCreation=" + gameCreation +
-                ", gameDuration=" + gameDuration +
-                '}';
     }
 
 }

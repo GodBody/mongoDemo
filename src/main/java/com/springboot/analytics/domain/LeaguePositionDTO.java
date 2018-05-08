@@ -1,6 +1,5 @@
-package com.springboot.springbootdemo.domain;
+package com.springboot.analytics.domain;
 
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 

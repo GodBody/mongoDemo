@@ -1,6 +1,6 @@
-package com.springboot.springbootdemo.controller;
+package com.springboot.analytics.controller;
 
-import com.springboot.springbootdemo.domain.*;
+import com.springboot.analytics.domain.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;

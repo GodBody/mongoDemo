@@ -1,26 +1,26 @@
-package com.springboot.springbootdemo.domain;
+package com.springboot.analytics.domain;
 
 import java.util.Map;
 
-public class ItemListDTO {
-    private Map<String, ItemDTO> data;
+public class SummonerSpellListDTO {
+    private Map<String, SummonerSpellDTO> data;
     private String version;
     private String type;
 
     @Override
     public String toString() {
-        return "ItemListDTO{" +
+        return "SummonerSpellListDTO{" +
                 "data=" + data +
                 ", version='" + version + '\'' +
                 ", type='" + type + '\'' +
                 '}';
     }
 
-    public Map<String, ItemDTO> getData() {
+    public Map<String, SummonerSpellDTO> getData() {
         return data;
     }
 
-    public void setData(Map<String, ItemDTO> data) {
+    public void setData(Map<String, SummonerSpellDTO> data) {
         this.data = data;
     }
 
