@@ -44,12 +44,3 @@
 <hr/>
 5. 실행 후 main 확인
 <img src = "./img/메인.png" ></img>
-<hr/>
-
-
-
-
-
-
-
-
