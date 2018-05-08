@@ -28,6 +28,7 @@
 * SummonerSpell : 게임 스킬(업데이트 시 자동 갱신)
 
 ## 사용 방법
+<hr/>
 
 1. https://developer.riotgames.com/ 접속
 <img src = "./img/developer 메인.png" width="400" height="300"></img>
