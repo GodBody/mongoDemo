@@ -1,4 +1,4 @@
-<%@ page import="com.springboot.springbootdemo.domain.ChampionDTO" %>
+<%@ page import="com.springboot.analytics.domain.ChampionDTO" %>
 <%@ page import="java.util.*" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 

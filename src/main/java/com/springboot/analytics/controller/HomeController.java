@@ -32,7 +32,7 @@ public class HomeController {
         headers.set("User-Agent",
                 "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML,like Gecko) Chrome/64.0.3282.186 Safari/537.36");
         headers.set("Accept-Language", "ko-KR,ko;q=0.9,en-US;q=0.8,en;q=0.7");
-        headers.set("X-Riot-Token", "RGAPI-da16f23a-2c91-45b7-97d4-2258caac45d8");
+        headers.set("X-Riot-Token", "RGAPI-448fde72-6811-467e-a194-01ba9a7e0a8d");
         return new HttpEntity<T>(headers);
 
     }
