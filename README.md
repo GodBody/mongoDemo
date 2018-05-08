@@ -29,6 +29,8 @@
 
 ## 사용 방법
 * ![main](./img/developer 메인.png)
+![main](./img/developer 메인.png)
+![main](./img/갱신.png)
 
 
 
