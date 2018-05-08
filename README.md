@@ -32,7 +32,7 @@
 1. https://developer.riotgames.com/ 접속
 <hr/>
 2. 로그인 (ID : knoc3885 / PW : vlckd123!@)
-![main](./img/로그인.png) {: width="100" height="100"}
+![main](./img/로그인.png) {: width="100px" height="100px"}
 <hr/>
 3. 하단에 captcha 인증 후 regenerate key 눌러서 key 갱신하고 복사
 ![main](./img/갱신.png) {: width="100" height="100"}
