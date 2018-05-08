@@ -8,13 +8,13 @@
 * 자주 사용하는 서비스를 직접 구현하고 싶었음.
 
 ## 개발 목적
-* 게임이 업데이트 될 떄마다 직접 공식 홈페이지에 접속해야 하는 불편함이 존재. 
-* 분리되어 있는 커뮤니티와 서비스를 통합하기 위함.
+* 기존 프로젝트에서 간단하게 구현한 기능을 추가 및 개선하여 독립적으로 구현.
+
 ## 개발 환경
 * 언어 : Java
 * Front : HTML, CSS, Bootstrap
 * Back : Spring Boot, JavaScript & JQuery, myBatis
-* DB : MySQL, MongoDB
+* DB : MongoDB
 * Server : Tomcat
 * Build : Maven
 ## 기능
