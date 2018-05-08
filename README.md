@@ -28,7 +28,7 @@
 * SummonerSpell : 게임 스킬(업데이트 시 자동 갱신)
 
 ## 사용 방법
-* ![메인](./img/developer 메인.png)
+* ![메인](/img/developer 메인.png)
 
 
 
