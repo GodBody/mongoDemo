@@ -39,10 +39,10 @@
 <img src = "./img/갱신.png" width="400" height="300"></img>
 <hr/>
 4. "X-Riot-Token" 부분의 2번째 param에 복사한 키를 붙여넣기
-<img src = "./img/setHeaders.png" width="400" height="300"></img>
+<img src = "./img/setHeaders.png" ></img>
 <hr/>
 5. 실행 후 main 확인
-<img src = "./img/메인.png" width="200" height="300"></img>
+<img src = "./img/메인.png" ></img>
 <hr/>
 
 
