@@ -1,5 +1,5 @@
 
-# LeagueOfLegend 전적 검색 서비스
+# Spring Boot 기반 LOL 전적 검색 서비스
 
 ## 개발 기간
 * 2018.01 ~ 2018.04
