@@ -13,10 +13,11 @@
 ## 개발 환경
 * 언어 : Java
 * Front : HTML, CSS, Bootstrap
-* Back : Spring Boot, JavaScript & JQuery, myBatis
+* Back : Spring Boot, JavaScript & JQuery
 * DB : MongoDB
 * Server : Tomcat
 * Build : Maven
+* IDE : IntelliJ, Studio 3T, Sublime Text
 ## 기능
 * 소환사 검색 ( 기본적인 소환사 정보 표기, 참여한 게임 정보, 선택한 챔피언 별 통계 )
 * 전체 챔피언 별 통계 ( 승률 ) 
