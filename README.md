@@ -30,9 +30,9 @@
 ## 사용 방법
 
 1. https://developer.riotgames.com/ 접속
-<img src = "./img/developer.png" width="400" height="300"></img>
+<img src = "./img/developer 메인.png" width="400" height="300"></img>
 <hr/>
-2. 로그인 (ID : knoc3885 / PW : vlckd123!@)
+2. 로그인 (ID : knoc3885 / PW : vlckd123!@)   지역 korea 선택!!!
 <img src = "./img/로그인.png" width="200" height="300"></img>
 <hr/>
 3. 하단에 captcha 인증 후 regenerate key 눌러서 key 갱신하고 복사
