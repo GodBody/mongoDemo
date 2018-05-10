@@ -41,7 +41,8 @@
    
 ## 전적 검색 기능 사용 방법
 * REST API를 사용하기 위해 Riot 계정으로 Token을 발급받아야 함. (Expire될 경우 갱신)
-* 제 계정을 사용하세요 ( ID : knoc3885 / PW : vlckd123!@ )
+* riot에 공식 production key를 신청하여 결과 승인을 기다리고 있음.
+* 보안정책상 아래 일부 사진 삭제.
 <hr/>
 
 1. https://developer.riotgames.com/ 접속 (Riot-developer 지원 페이지 - REST API 제공)
@@ -51,11 +52,8 @@
 <img src = "./img/로그인.png" width="200" height="300"></img>
 <hr/>
 3. 하단에 Captcha 인증 후 regenerate key 눌러서 갱신한 후 복사.
-<img src = "./img/갱신.png" width="400" height="300"></img>
+
 <hr/>
-4. lol-analytics-spring-boot/src/main/java/com/springboot/analytics/controller/HomeController.java 파일의 
-   상단 setHeaders 메소드의 "X-Riot-Token" 부분의 2번째 param에 복사한 키를 붙여넣기.
-<img src = "./img/setHeaders.png" ></img>
-<hr/>
+
 5. 실행 후 main 확인
 <img src = "./img/메인.png" ></img>
