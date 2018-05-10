@@ -30,11 +30,13 @@
 * SummonerSpell : 게임 스킬(업데이트 시 자동 갱신)
 
 ## 기본 실행 방법
-* http://13.125.18.131:8080/lol-analytics-spring-boot/search?summonerName="검색하고자 하는 소환사 닉네임 입력 위치"
-* ex) http://13.125.18.131:8080/lol-analytics-spring-boot/search?summonerName=Tchau
-* 개선예정
-   - Context Path 설정
-   - 보안 그룹 설정
+* http://13.125.18.131:8080/lol-analytics-spring-boot/main 에 접속하고 오른쪽 상단에 검색할 소환사 닉네임 입력 후 .GG 버튼 클릭
+
+## 개선할 점
+* Context Path 설정
+* key 갱신을 대체할 수 있는 방법 모색 ( 현재는 key가 만료되면 로컬에서 일일이 갱신된 key를 다시 setting하고 war로 배포하는 작업을 반복 ) 
+* 직접 갱신하여 배포하지 않으면 ? 다른 사람은 이용할 수 없음
+ 
    
 ## 전적 검색 기능 사용 방법
 * REST API를 사용하기 위해 Riot 계정으로 Token을 발급받아야 함. (Expire될 경우 갱신)
