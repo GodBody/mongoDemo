@@ -30,8 +30,8 @@
 * SummonerSpell : 게임 스킬(업데이트 시 자동 갱신)
 <hr/>
 ## 기본 실행 방법
-http://13.125.18.131:8080/lol-analytics-spring-boot/search?summonerName="검색하고자 하는 소환사 닉네임 입력 위치"
-ex) http://13.125.18.131:8080/lol-analytics-spring-boot/search?summonerName=Tchau
+* http://13.125.18.131:8080/lol-analytics-spring-boot/search?summonerName="검색하고자 하는 소환사 닉네임 입력 위치"
+* ex) http://13.125.18.131:8080/lol-analytics-spring-boot/search?summonerName=Tchau
 * 개선예정
    - Context Path 설정
    - 보안 그룹 설정
