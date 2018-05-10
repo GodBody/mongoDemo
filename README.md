@@ -28,14 +28,14 @@
 * Match : 단일 게임에 대한 모든 데이터
 * Summoner : 등록된 게임 사용자 정보
 * SummonerSpell : 게임 스킬(업데이트 시 자동 갱신)
-<hr/>
+
 ## 기본 실행 방법
 * http://13.125.18.131:8080/lol-analytics-spring-boot/search?summonerName="검색하고자 하는 소환사 닉네임 입력 위치"
 * ex) http://13.125.18.131:8080/lol-analytics-spring-boot/search?summonerName=Tchau
 * 개선예정
    - Context Path 설정
    - 보안 그룹 설정
-<hr/>
+   
 ## 전적 검색 기능 사용 방법
 * REST API를 사용하기 위해 Riot 계정으로 Token을 발급받아야 함. (Expire될 경우 갱신)
 * 제 계정을 사용하세요 ( ID : knoc3885 / PW : vlckd123!@ )
