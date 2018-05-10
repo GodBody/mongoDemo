@@ -30,7 +30,7 @@
 * SummonerSpell : 게임 스킬(업데이트 시 자동 갱신)
 
 ## 기본 실행 방법
-* http://13.125.18.131:8080/lol-analytics-spring-boot/main 에 접속하고 오른쪽 상단에 검색할 소환사 닉네임 입력 후 .GG 버튼 클릭
+* http://13.125.18.131:8080/lol-analytics-spring-boot/main 에 접속하고 오른쪽 상단에 검색할 소환사 닉네임 입력 후 .GG 버튼 클릭 (Enter 금지)
 
 ## 개선할 점
 * Context Path 설정
