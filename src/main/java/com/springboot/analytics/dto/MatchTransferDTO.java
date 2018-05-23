@@ -1,4 +1,4 @@
-package com.springboot.analytics.domain;
+package com.springboot.analytics.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.data.annotation.Id;

@@ -1,4 +1,4 @@
-package com.springboot.analytics.domain;
+package com.springboot.analytics.dto;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;

@@ -1,4 +1,4 @@
-<%@ page import="com.springboot.analytics.domain.ChampionDTO"%>
+<%@ page import="com.springboot.analytics.dto.ChampionDTO"%>
 <%@ page import="java.util.*"%>
 <%@ page contentType="text/html;charset=UTF-8" language="java"%>
 
@@ -203,7 +203,7 @@ table {
 				</c:forEach>
 			</div>
 
-			<h3>Champion Odds Statistics (over 400 games)</h3>
+			<h3>Champion Odds Statistics (over 1000 games)</h3>
 			<div>
 				<table>
 					<tr>
@@ -213,11 +213,11 @@ table {
 					</tr>
 					<c:forEach items="${championList}" var="champion">
 						<tr>
-							<c:if test="${champion.winCount + champion.lossCount >= 400}">
+							<c:if test="${champion.winCount + champion.lossCount >= 1000}">
 								<td><img width="20px" height="20px"
 									src="http://opgg-static.akamaized.net/images/lol/champion/<c:url value="${champion.image.full}"/>" />
 									${champion.name}</td>
-								<td>${champion.winCount + champion.lossCount}games(
+								<td>${champion.winCount + champion.lossCount} games (
 									${champion.winCount}W ${champion.lossCount}L )</td>
 								<td><fmt:formatNumber
 										value="${champion.winCount / (champion.winCount + champion.lossCount) * 100}"
@@ -246,7 +246,7 @@ table {
 								src="http://opgg-static.akamaized.net/images/lol/champion/<c:url value="${list.championName}"/>" />
 								<c:set var="name" value="${fn:split(list.championName, '.')}" />
 								${name[0]}</td>
-							<td>${list.gameCount}games(${list.winCount}W
+							<td>${list.gameCount} games( ${list.winCount}W
 								${list.looseCount}L )</td>
 							<c:if test="${list.winRate >= 60}">
 								<td><strong style="color: #c6443e"><fmt:formatNumber
@@ -496,7 +496,7 @@ table {
 						</c:if>
 						<td><img width="30px" height="30px"
 							src="http://opgg-static.akamaized.net/images/lol/champion/<c:url value="${participant.championName}"/>" /><a
-							href="http://13.125.18.131:8080/lol-analytics-spring-boot/search?summonerName==${match.participantIdentities.get(participant.participantId-1).player.summonerName}">
+							href="http://13.125.18.131:8080/lol-analytics-spring-boot/search?summonerName=${match.participantIdentities.get(participant.participantId-1).player.summonerName}">
 								${match.participantIdentities.get(participant.participantId-1).player.summonerName}</a>
 						</td>
 						<c:set var="htier"
@@ -632,8 +632,9 @@ table {
 	
 			$.get("http://13.125.18.131:8080/lol-analytics-spring-boot/search?summonerName=" + name);
 			self.location = "http://13.125.18.131:8080/lol-analytics-spring-boot/search?summonerName=" + name;
-	
-	
+		/* $.get("http://localhost:8080/search?summonerName=" + name);
+		self.location = "http://localhost:8080/search?summonerName=" + name;
+		 */
 		});
 	
 		$('input[type="text"]').keydown(function() {

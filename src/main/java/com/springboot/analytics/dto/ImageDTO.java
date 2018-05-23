@@ -1,4 +1,4 @@
-package com.springboot.analytics.domain;
+package com.springboot.analytics.dto;
 
 public class ImageDTO {
 	
