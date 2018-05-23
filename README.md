@@ -4,9 +4,6 @@
 ## 개발 기간
 * 2018.03 ~ 2018.04
 
-## 개발 동기
-* 자주 사용하는 서비스를 직접 구현하고 싶었음.
-
 ## 개발 목적
 * 기존 프로젝트에서 간단하게 구현한 기능을 추가 및 개선하여 독립적으로 구현.
 
@@ -18,10 +15,12 @@
 * Server : Tomcat
 * Build : Maven
 * IDE : IntelliJ, Studio 3T, Sublime Text
-* Cloud : Amazon EC2 - Free tier
+* Cloud : Amazon EC2
+
 ## 기능
 * 소환사 검색 ( 기본적인 소환사 정보 표기, 참여한 게임 정보, 선택한 챔피언 별 통계 )
 * 전체 챔피언 별 통계 ( 승률 ) 
+
 ## DB Collection
 * Champion : 게임 캐릭터 (업데이트 시 자동 갱신)
 * Item : 게임 아이템 (업데이트 시 자동 갱신)
