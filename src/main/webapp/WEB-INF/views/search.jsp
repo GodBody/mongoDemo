@@ -367,7 +367,7 @@ table {
 						</c:if>
 						<td><img width="30px" height="30px"
 							src="http://opgg-static.akamaized.net/images/lol/champion/<c:url value="${participant.championName}"/>" /><a
-							href="http://13.125.18.131:8080/lol-analytics-spring-boot/search?summonerName=${match.participantIdentities.get(participant.participantId-1).player.summonerName}">
+							href="http://localhost:8080/search?summonerName=${match.participantIdentities.get(participant.participantId-1).player.summonerName}">
 								${match.participantIdentities.get(participant.participantId-1).player.summonerName}</a>
 						</td>
 						<c:set var="htier"
@@ -496,7 +496,7 @@ table {
 						</c:if>
 						<td><img width="30px" height="30px"
 							src="http://opgg-static.akamaized.net/images/lol/champion/<c:url value="${participant.championName}"/>" /><a
-							href="http://13.125.18.131:8080/lol-analytics-spring-boot/search?summonerName=${match.participantIdentities.get(participant.participantId-1).player.summonerName}">
+							href="http://localhost:8080/search?summonerName=${match.participantIdentities.get(participant.participantId-1).player.summonerName}">
 								${match.participantIdentities.get(participant.participantId-1).player.summonerName}</a>
 						</td>
 						<c:set var="htier"
@@ -630,8 +630,8 @@ table {
 			console.log(name);
 	
 	
-			$.get("http://13.125.18.131:8080/lol-analytics-spring-boot/search?summonerName=" + name);
-			self.location = "http://13.125.18.131:8080/lol-analytics-spring-boot/search?summonerName=" + name;
+			$.get("http://localhost:8080/search?summonerName=" + name);
+			self.location = "http://localhost:8080/search?summonerName=" + name;
 		/* $.get("http://localhost:8080/search?summonerName=" + name);
 		self.location = "http://localhost:8080/search?summonerName=" + name;
 		 */
@@ -645,8 +645,8 @@ table {
 				console.log(name);
 	
 	
-				$.get("http://13.125.18.131:8080/lol-analytics-spring-boot/search?summonerName=" + name);
-				self.location = "http://13.125.18.131:8080/lol-analytics-spring-boot/search?summonerName=" + name;
+				$.get("http://localhost:8080/search?summonerName=" + name);
+				self.location = "http://localhost:8080/search?summonerName=" + name;
 	
 			}
 		});

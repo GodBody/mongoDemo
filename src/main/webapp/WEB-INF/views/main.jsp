@@ -82,8 +82,8 @@
 		console.log(name);
 
 
-		$.get("http://13.125.18.131:8080/lol-analytics-spring-boot/search?summonerName=" + name);
-		self.location = "http://13.125.18.131:8080/lol-analytics-spring-boot/search?summonerName=" + name;
+		$.get("http://localhost:8080/search?summonerName=" + name);
+		self.location = "http://localhost:8080/search?summonerName=" + name;
 
 	/* 	$.get("http://localhost:8080/search?summonerName=" + name);
 		self.location = "http://localhost:8080/search?summonerName=" + name;
@@ -99,8 +99,8 @@
 			console.log(name);
 
 
-			$.get("http://13.125.18.131:8080/lol-analytics-spring-boot/search?summonerName=" + name);
-			self.location = "http://13.125.18.131:8080/lol-analytics-spring-boot/search?summonerName=" + name;
+			$.get("http://localhost:8080/search?summonerName=" + name);
+			self.location = "http://localhost:8080/search?summonerName=" + name;
 
 		}
 	});

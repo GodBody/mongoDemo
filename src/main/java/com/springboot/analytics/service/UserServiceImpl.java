@@ -2,11 +2,11 @@ package com.springboot.analytics.service;
 
 import com.springboot.analytics.dao.UserDao;
 import com.springboot.analytics.dto.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
+import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
@@ -21,20 +21,31 @@ import java.util.Iterator;
 @Service
 public class UserServiceImpl implements UserService {
 
+    private Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
+
+    private static final String RIOTGAMES_URL = "https://developer.riotgames.com";
+
+    private static final String SEARCH_BY_NAME_URL = "https://kr.api.riotgames.com/lol/summoner/v3/summoners/by-name/";
+    private static final String TIER_BY_ID_URL = "https://kr.api.riotgames.com/lol/league/v3/positions/by-summoner/";
+    private static final String SEARCH_BY_ID_RECENT_20_GAMES = "https://kr.api.riotgames.com/lol/match/v3/matchlists/by-account/";
+    private static final String MATCH_BY_ID = "https://kr.api.riotgames.com/lol/match/v3/matches/";
+
+    private static final String X_Riot_Token = "X-Riot-Token";
+
+    private static final String API_KEY = "RGAPI-8d48175c-b265-4309-8bed-07fc3eb7ccce";
+
     @Autowired
     private UserDao userDao;
 
-    private static RestTemplate restTemplate = new RestTemplate();
+    @Autowired
+    private RestTemplateBuilder restTemplateBuilder;
+
 
     public static <T> HttpEntity<T> setHeaders() {
         HttpHeaders headers = new HttpHeaders();
-
-        headers.set("Origin", "https://developer.riotgames.com");
-        headers.set("Accept-Charset", "application/x-www-form-urlencoded; charset=UTF-8");
-        headers.set("User-Agent",
-                "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML,like Gecko) Chrome/64.0.3282.186 Safari/537.36");
-        headers.set("Accept-Language", "ko-KR,ko;q=0.9,en-US;q=0.8,en;q=0.7");
-        headers.set("X-Riot-Token", "RGAPI-28269ca9-20b4-42e8-88b4-e0a3eee34461");
+        headers.set(HttpHeaders.ORIGIN, RIOTGAMES_URL);
+        headers.set(HttpHeaders.ACCEPT, MediaType.APPLICATION_FORM_URLENCODED_VALUE);
+        headers.set(X_Riot_Token, API_KEY);
 
         return new HttpEntity<T>(headers);
     }
@@ -43,16 +54,16 @@ public class UserServiceImpl implements UserService {
     public void insert(String name) throws HttpClientErrorException {
 
         try {
+
+            RestTemplate restTemplate = restTemplateBuilder.build();
             // 유저 닉네임으로 검색
-            String searchByName = "https://kr.api.riotgames.com/lol/summoner/v3/summoners/by-name/";
 
-            HttpEntity<SummonerDTO> requestEn = setHeaders();
-            ResponseEntity<SummonerDTO> responseEn = restTemplate.exchange(searchByName + name, HttpMethod.GET, requestEn,
-                    SummonerDTO.class);
+            HttpEntity<SummonerDTO> httpEntity = setHeaders();
+            ResponseEntity<SummonerDTO> responseEntity = restTemplate.exchange(SEARCH_BY_NAME_URL + name, HttpMethod.GET, httpEntity, SummonerDTO.class);
 
-            SummonerDTO summonerDTO = responseEn.getBody();
+            SummonerDTO summonerDTO = responseEntity.getBody();
 
-            SummonerDTO summonerDB = userDao.getSummoner(summonerDTO.getId());
+            SummonerDTO summonerFromDB = userDao.getSummoner(summonerDTO.getId());
 
             // DB에 등록되있는지 체크하는 flag
             boolean check = userDao.exist(summonerDTO.getId());
@@ -62,17 +73,17 @@ public class UserServiceImpl implements UserService {
 
                 System.out.println("새로운 소환사 등록");
                 // 유저의 랭킹 정보
-                String tierById = "https://kr.api.riotgames.com/lol/league/v3/positions/by-summoner/";
+
 
                 HttpEntity<Set<LeaguePositionDTO>> requestEn2 = setHeaders();
-                ResponseEntity<Set> responseEn2 = restTemplate.exchange(tierById + String.valueOf(summonerDTO.getId()), HttpMethod.GET, requestEn2, Set.class);
+                ResponseEntity<Set> responseEn2 = restTemplate.exchange(TIER_BY_ID_URL + String.valueOf(summonerDTO.getId()), HttpMethod.GET, requestEn2, Set.class);
 
                 Set<LeaguePositionDTO> positions = responseEn2.getBody();
 
                 // 유저의 고유한 ID로 최근 20 게임 플레이 리스트를 가져온다.
-                String recent = "https://kr.api.riotgames.com/lol/match/v3/matchlists/by-account/";
+
                 HttpEntity<MatchListDTO> requestEn3 = setHeaders();
-                ResponseEntity<MatchListDTO> responseEn3 = restTemplate.exchange(recent + String.valueOf(summonerDTO.getAccountId()) + "?endIndex=20", HttpMethod.GET, requestEn3,
+                ResponseEntity<MatchListDTO> responseEn3 = restTemplate.exchange(SEARCH_BY_ID_RECENT_20_GAMES + String.valueOf(summonerDTO.getAccountId()) + "?endIndex=20", HttpMethod.GET, requestEn3,
                         MatchListDTO.class);
 
                 List<MatchReferenceDTO> matches = responseEn3.getBody().getMatches();
@@ -84,10 +95,9 @@ public class UserServiceImpl implements UserService {
                 // 위에서 가져온 플레이 리스트의 각 게임마다의 상세 정보를 가져와서 DB에 저장.
                 for (int i = 0; i < matches.size(); i++) {
 
-                    String matchById = "https://kr.api.riotgames.com/lol/match/v3/matches/";
 
                     HttpEntity<MatchDTO> request = setHeaders();
-                    ResponseEntity<MatchDTO> response = restTemplate.exchange(matchById + matches.get(i).getGameId(), HttpMethod.GET, request, MatchDTO.class);
+                    ResponseEntity<MatchDTO> response = restTemplate.exchange(MATCH_BY_ID + matches.get(i).getGameId(), HttpMethod.GET, request, MatchDTO.class);
 
 
                     MatchDTO match = response.getBody();
@@ -98,20 +108,19 @@ public class UserServiceImpl implements UserService {
             }
 
             // 기존에 등록되있지만 새로운 정보가 갱신될 부분이 있다면? 새로운 부분만 가져와서 DB에 등록한다.
-            else if (summonerDB.getRevisionDate() < summonerDTO.getRevisionDate()) {
+            else if (summonerFromDB.getRevisionDate() < summonerDTO.getRevisionDate()) {
 
                 System.out.println("게임 데이터 갱신");
-                String tierById = "https://kr.api.riotgames.com/lol/league/v3/positions/by-summoner/";
+
 
                 HttpEntity<Set<LeaguePositionDTO>> requestEn2 = setHeaders();
-                ResponseEntity<Set> responseEn2 = restTemplate.exchange(tierById + String.valueOf(summonerDTO.getId()), HttpMethod.GET, requestEn2, Set.class);
+                ResponseEntity<Set> responseEn2 = restTemplate.exchange(TIER_BY_ID_URL + String.valueOf(summonerDTO.getId()), HttpMethod.GET, requestEn2, Set.class);
 
 
                 Set<LeaguePositionDTO> positions = responseEn2.getBody();
 
-                String recent = "https://kr.api.riotgames.com/lol/match/v3/matchlists/by-account/";
                 HttpEntity<MatchListDTO> requestEn3 = setHeaders();
-                ResponseEntity<MatchListDTO> responseEn3 = restTemplate.exchange(recent + String.valueOf(summonerDTO.getAccountId()) + "?endIndex=20", HttpMethod.GET, requestEn3,
+                ResponseEntity<MatchListDTO> responseEn3 = restTemplate.exchange(SEARCH_BY_ID_RECENT_20_GAMES + String.valueOf(summonerDTO.getAccountId()) + "?endIndex=20", HttpMethod.GET, requestEn3,
                         MatchListDTO.class);
 
                 List<MatchReferenceDTO> matches = responseEn3.getBody().getMatches();
@@ -128,10 +137,10 @@ public class UserServiceImpl implements UserService {
                 summonerDTO.setMatches(matchesDB);
 
                 for (int i = 0; i < matches.size(); i++) {
-                    String matchById = "https://kr.api.riotgames.com/lol/match/v3/matches/";
+
 
                     HttpEntity<MatchDTO> request = setHeaders();
-                    ResponseEntity<MatchDTO> response = restTemplate.exchange(matchById + matches.get(i).getGameId(), HttpMethod.GET, request, MatchDTO.class);
+                    ResponseEntity<MatchDTO> response = restTemplate.exchange(MATCH_BY_ID + matches.get(i).getGameId(), HttpMethod.GET, request, MatchDTO.class);
 
 
                     MatchDTO matchDTO = response.getBody();
@@ -153,10 +162,10 @@ public class UserServiceImpl implements UserService {
     @Override
     public SummonerDTO read(String summonerName) {
 
-        String searchByName = "https://kr.api.riotgames.com/lol/summoner/v3/summoners/by-name/";
+        RestTemplate restTemplate = restTemplateBuilder.build();
 
         HttpEntity<SummonerDTO> requestEn = setHeaders();
-        ResponseEntity<SummonerDTO> responseEn = restTemplate.exchange(searchByName + summonerName, HttpMethod.GET, requestEn,
+        ResponseEntity<SummonerDTO> responseEn = restTemplate.exchange(SEARCH_BY_NAME_URL + summonerName, HttpMethod.GET, requestEn,
                 SummonerDTO.class);
 
         long summonerId = responseEn.getBody().getId();

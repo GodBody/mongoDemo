@@ -3,30 +3,38 @@ package com.springboot.analytics.controller;
 
 import com.springboot.analytics.dto.*;
 import com.springboot.analytics.service.UserService;
+import com.springboot.analytics.service.UserServiceImpl;
 import com.springboot.analytics.util.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+
 import java.util.List;
 import java.util.Collections;
 
 @Controller
 public class HomeController {
 
+    private Logger logger = LoggerFactory.getLogger(HomeController.class);
+
     @Autowired
     private UserService userService;
 
-    @RequestMapping(value = "/main", method = RequestMethod.GET)
-    public void index() {
+    @GetMapping(value = "/main")
+    public String main() {
+        return "/main";
     }
 
-    @RequestMapping(value = "/search", method = RequestMethod.GET)
+    @GetMapping(value = "/search")
     public String search(@RequestParam(value = "summonerName") String name, Model model) throws Exception {
 
-        System.out.println("검색된 소환사 닉네임 : " + name);
+        logger.debug("검색된 소환사 닉네임 : " + name);
 
         userService.insert(name);
 
